@@ -1,5 +1,5 @@
 'use strict';
-let staticName = `static-cache-4`;
+let staticName = `static-cache-2`;
 let dynamicName = 'dynamic-cache-1';
 let listOfStaticFiles = [
   '/',
@@ -20,6 +20,7 @@ let listOfStaticFiles = [
   'https://fonts.gstatic.com/s/materialicons/v50/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
 ];
 //we can add the materialize css and js too
+let baseURL = null;
 
 //listen for SW events
 self.addEventListener('install', onInstall); // installing the service worker
@@ -85,7 +86,6 @@ function onFetch(ev) {
                 //need to use clone if we are going to return the file to the browser
                 cache.put(ev.request.url, fetchRes.clone());
                 //check the headers for a content-type for custom responses
-                console.log('HEADERS', fetchRes.headers);
                 return fetchRes;
               });
             } else {
@@ -131,5 +131,8 @@ function onMessage({ data }) {
   //probably just updating our online status
   if ('statusUpdate' in data) {
     console.log(`Service Worker receiving message ${data}`);
+  }
+  if ('baseURL' in data) {
+    baseURL = data.baseURL;
   }
 }

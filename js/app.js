@@ -1,7 +1,9 @@
 const app = {
   SW: null,
   deferredPrompt: null,
+  isOnline: true,
   max: 10,
+  baseURL: null,
   init: () => {
     if ('serviceWorker' in navigator) {
       app.initServiceWorker().catch(console.error);
@@ -20,6 +22,7 @@ const app = {
       swRegistration.active;
     //the registration object could be in any state
 
+    app.sendMessage({ baseURL: app.baseURL });
     // listen for new service worker to take over
     //could be first one or a new one taking over
     navigator.serviceWorker.addEventListener('controllerchange', async () => {
@@ -34,6 +37,8 @@ const app = {
     console.log(data);
   },
   sendMessage: (msg) => {
+    //msg is a JS Object
+    //tell SW that we are online or offline
     app.SW.postMessage(msg);
   },
   setImg: () => {
@@ -54,6 +59,7 @@ const app = {
     });
     app.max--;
     img.src = url;
+    //this line will call the service worker.
   },
 };
 document.addEventListener('DOMContentLoaded', app.init);
